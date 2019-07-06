@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"
+          xmlns:th="http://www.thymeleaf.org">
+<!--    Bootstrap   -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Event Organizer</title>
+</head>
+<body>
+<div th:insert="fragments/navbar.html :: navbar"></div>
+
+
+<div class="container">
+<div class="jumbotron" style="margin-top: 2rem">
+
+    <h1 class="display-4">Welcome to Event Organizer!</h1>
+    <p class="lead">A place where You can sign up to an Event, comment it or create Your own one.</p>
+    <hr class="my-4">
+    <p>Please login or create an account</p>
+    </div>
+</div>
+
+
+
+<div th:insert="fragments/bootstrapScript.html :: scripts"></div>
+</body>
+</html>

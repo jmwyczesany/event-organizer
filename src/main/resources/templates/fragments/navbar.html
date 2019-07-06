@@ -1,0 +1,59 @@
+<div th:fragment="navbar" xmlns:th="http://www.thymeleaf.org"
+     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <span class="navbar-brand mb-0 h1">Event organizer</span>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02"
+                aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="/allEvents/page/1" th:href="@{|/allEvents/page/1/|}">All
+                        events</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Find event</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/userProfile" th:href="@{/userProfile}">My Profile</a>
+                </li>
+                <li sec:authorize="hasRole('ORGANIZER')" class="nav-item">
+                    <a class="nav-link" href="/addEvent" th:href="@{/addEvent}">Add new Event</a>
+                </li>
+                <li class="nav-item d-lg-none">
+                    <form sec:authorize="isAuthenticated()" th:action="@{/logout}" th:method="post">
+                        <input class="btn btn-outline-danger btn-sm" type="submit" value="Logout">
+                    </form>
+                </li>
+                <li class="nav-item d-lg-none" sec:authorize="isAnonymous()">
+                    <a type="submit" class="btn btn-primary btn-sm" th:href="@{/login}">Login</a>
+                </li>
+                <li class="nav-item d-lg-none" sec:authorize="isAnonymous()">
+                    <a type="submit" class="btn btn-primary btn-sm" th:href="@{/registration}">Create an account</a>
+                </li>
+            </ul>
+        </div>
+<!--        login / logout -->
+            <div class="d-none d-lg-block">
+                <form class="form-inline my-2 my-lg-0" sec:authorize="isAuthenticated()" th:action="@{/logout}" th:method="post">
+                    <!-- logout for authenticated user -->
+                    <span>Hello,
+                    <span th:text="${#authentication.getName()}"></span>!&nbsp;</span>
+                    <button type="submit" class="btn btn-danger">Logout</button>
+                </form>
+                <!--login / registration for anonymous user-->
+                <form class="form-inline my-2 my-lg-0" sec:authorize="isAnonymous()">
+                <span>Hello there,&nbsp;</span>
+                         <span>
+                             <a type="submit" class="btn btn-primary btn-sm" th:href="@{/login}">Login</a>
+                          &nbsp;or&nbsp;
+                             <a type="submit" class="btn btn-primary btn-sm" th:href="@{/registration}">Create an account</a>
+                         </span>
+
+                </form>
+            </div>
+
+    </nav>
+</div>

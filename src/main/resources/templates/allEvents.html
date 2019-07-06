@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <!--    Boot strap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <!--    adding my own poor css -->
+    <link rel="stylesheet" type="text/css" href="/static/css/eventdetails.css" th:href="@{/static/css/eventdetails.css}">
+    <title>Events</title>
+</head>
+<body>
+<div th:insert="fragments/navbar.html :: navbar"></div>
+<table class="table">
+    <thead>
+<tr>
+    <th scope="col">Title</th> <th scope="col">About Event</th> <th scope="col">From</th> <th scope="col">To</th>
+</tr>
+    </thead>
+
+    <tbody>
+        <tr th:if="${!allEvents.hasContent()}">
+            <td>No events available</td>
+        </tr>
+        <tr th:each="event : ${allEvents}">
+            <td><span th:text="${event.title}">Title</span></td>
+             <td>
+               <div class="container">
+                   <div id="long-event-description">
+                       <p  th:text="${event.description}">
+                            Long event description
+                       </p>
+                       <a th:href="@{/eventDetails(id=${event.eventId})}">+ Read more</a>
+                   </div>
+               </div>
+             </td>
+            <td><span th:text="${#temporals.format(event.start, 'dd-MM-yyyy HH:mm')}">StartTime</span></td>
+            <td><span th:text="${#temporals.format(event.end, 'dd-MM-yyyy HH:mm')}">EndTime</span></td>
+            <td></td>
+        </tr>
+
+    </tbody>
+</table>
+
+<div class="row" th:if="${allEvents.totalPages > 0}">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <nav aria-label="Pagination">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:each="pageNo : ${pagination}" >
+                    <a class="page-link" th:href="@{|/allEvents/page/${pageNo}|}" th:text="${pageNo}"></a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div class="col-md-2"></div>
+</div>
+
+<div th:insert="fragments/bootstrapScript.html :: scripts"></div>
+
+</body>
+</html>
