@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"
+          xmlns:th="http://www.thymeleaf.org">
+<!--    Bootstrap   -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Index</title>
+</head>
+<body>
+<p>This is Event Manager main page!</p>
+<div th:if="${accountCreated != null}">
+    <p>Created account for: <span th:text="${accountCreated}">.</span></p>
+</div>
+<div th:if="${loggedUser != null}">
+    <p>User: <span th:text="${loggedUser}"></span> logged in.</p>
+</div>
+
+
+</body>
+</html>

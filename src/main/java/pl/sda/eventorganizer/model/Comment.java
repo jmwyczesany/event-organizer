@@ -1,4 +1,4 @@
-package pl.sda.eventorganizer;
+package pl.sda.eventorganizer.model;
 
 
 import lombok.AllArgsConstructor;
@@ -14,17 +14,13 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Participation {
+public class Comment {
 
     @Id
     @GeneratedValue
     private long id;
 
+    private String text;
+
     private LocalDateTime date;
-
-    private boolean interested;
-
-    private boolean confirmed;
-
-
 }

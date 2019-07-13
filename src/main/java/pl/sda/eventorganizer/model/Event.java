@@ -1,4 +1,4 @@
-package pl.sda.eventorganizer;
+package pl.sda.eventorganizer.model;
 
 
 import lombok.AllArgsConstructor;
@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @Entity
@@ -26,8 +25,8 @@ public class Event {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
-    @ManyToMany
-    private List<User> users;
+//    @ManyToMany
+//    private List<User> users;
 //    private List<Comment> comments;
 
 }
