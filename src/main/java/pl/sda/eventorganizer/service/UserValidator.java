@@ -40,7 +40,7 @@ public class UserValidator implements Validator {
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"email", "Not Empty", "All field are required");
 
-        if(userService.findByEmail(user.getEmail()) != null) {
+        if(userService.findByEmail(user.getEmail()).isPresent()) {
             errors.rejectValue("email", "Duplicate.registerForm.email", "Email already in base. Please Create account on another email.");
         }
         if (!user.getEmail().matches("^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$")) {
@@ -82,9 +82,9 @@ public class UserValidator implements Validator {
         } else {
 
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "NotEmpty", "All fields are required.");
-            if (!userService.findByEmail(loginForm.getEmail()).getPassword().equals(loginForm.getPassword())) {
-                errors.rejectValue("password", "WrongEmailOrPassword", "Wrong email or password.");
-            }
+//            if (!userService.findByEmail(loginForm.getEmail()).getPassword().equals(loginForm.getPassword())) {
+//                errors.rejectValue("password", "WrongEmailOrPassword", "Wrong email or password.");
+//            }
 
         }
     }

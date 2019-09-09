@@ -10,7 +10,8 @@ import pl.sda.eventorganizer.repository.Roles;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Set;
+import java.util.List;
+
 
 @Data
 @Entity
@@ -34,6 +35,11 @@ public class User implements UserDetails {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Roles role;
+
+    @ManyToMany
+    @JoinTable(name = "user_events", joinColumns = @JoinColumn(name = "user_id"),
+    inverseJoinColumns = @JoinColumn(name = "event_id"))
+    private List<Event> userEvents;
 
 
     @Override
@@ -124,7 +130,6 @@ public class User implements UserDetails {
     }
 
 
-//    @ManyToMany(mappedBy = "users")
-//    private List<Event> userEvents;
+
 
 }

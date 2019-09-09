@@ -6,16 +6,27 @@
 <!--    Bootstrap   -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <title>Index</title>
+    <title>Event Organizer</title>
 </head>
 <body>
-<p>This is Event Manager main page!</p>
+<div th:insert="fragments/navbar.html :: navbar"></div>
+<div class="container">
+    <p class="text-center">Welcome to Event Organizer App!</p>
+</div>
+<div class="container">
+    <p class="text-center">
+        <button type="submit" class="btn btn-primary">Login</button> or
+        <button type="submit" class="btn btn-primary">Create an account</button>
+    </p>
+</div>
+
 <div th:if="${accountCreated != null}">
     <p>Created account for: <span th:text="${accountCreated}">.</span></p>
 </div>
 <div th:if="${loggedUser != null}">
     <p>User: <span th:text="${loggedUser}"></span> logged in.</p>
 </div>
+
 
 
 </body>

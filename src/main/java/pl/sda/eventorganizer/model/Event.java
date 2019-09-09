@@ -4,29 +4,44 @@ package pl.sda.eventorganizer.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Event {
+public class Event extends AuditModel {
 
     @Id
-    @GeneratedValue
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "event_id", nullable = false)
+    private long eventId;
 
+    @Column(nullable = false, unique = true)
     private String title;
 
     @Lob
+    @Column(nullable = false)
+    @Length(min = 20)
     private String description;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    @Column(nullable = false)
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm")
+    private LocalDateTime start;
+    @Column(nullable = false )
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm")
+    private LocalDateTime end;
 
-//    @ManyToMany
-//    private List<User> users;
+    @ManyToMany(mappedBy = "userEvents")
+    private List<User> users;
+
+
+//    @OneToMany
 //    private List<Comment> comments;
+
 
 }

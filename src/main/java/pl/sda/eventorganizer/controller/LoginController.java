@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 import pl.sda.eventorganizer.dto.LoginForm;
-import pl.sda.eventorganizer.service.UserService;
 import pl.sda.eventorganizer.service.UserValidator;
 
 @Controller
@@ -23,6 +22,7 @@ public class LoginController {
     ModelAndView getLoginData(){
         return new ModelAndView("login").addObject("loginForm",new LoginForm());
     }
+
     @PostMapping("login")
     public ModelAndView loginPost(@ModelAttribute LoginForm loginForm, BindingResult bindingResult) {
 

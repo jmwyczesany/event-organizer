@@ -1,26 +1,34 @@
 package pl.sda.eventorganizer.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import java.time.LocalDateTime;
+
+import javax.persistence.*;
 
 @Entity
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Comment {
+public class Comment extends AuditModel{
 
     @Id
-    @GeneratedValue
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long commentId;
 
+    @Lob
     private String text;
+    private String author;
 
-    private LocalDateTime date;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "event_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private Event event;
 }

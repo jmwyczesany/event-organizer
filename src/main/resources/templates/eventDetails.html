@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+<!--    Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<!--    adding my own poor css -->
+    <link rel="stylesheet" type="text/css" href="/css/custom.css" th:href="@{/css/custom.css}">
+    <title th:text="${event.title}"> Title </title>
+</head>
+<body>
+    <div class="container" id="wrapper">
+
+        <div class="flex-item" id="heading-container"> <!--Event heading-->
+            <h1 class="custom-heading" th:object="${event}" th:action="@{/eventDetails(id=${eventId})}">
+                <span th:text="${event.title}">Title</span> / <span th:text="${#temporals.format(event.start, 'dd-MM-yyyy HH:mm')}">StartTime</span>
+            </h1>
+        </div>
+
+        <div class="flex-item" id="text-container"> <!--Event description-->
+                    <p class="custom-paragraph" th:text="${event.description}">Event description</p>
+        </div>
+
+        <div class="flex-item" id="comment-form">
+            <form th:object="${addCommentForm}" th:method="POST">
+                <!--        th:action="@{/eventDetails(id=${event.eventId})}"-->
+                <div class="form-group">
+                    <input type="text"
+                           id="comment-author"
+                           name="commentAuthor"
+                           autofocus="autofocus"
+                           placeholder="commentAuthor"
+                           th:field="*{author}">
+                </div>
+                <div class="form-group">
+        <textarea id="comment-text" cols="20" rows="6" class="form-group"
+                  name="commentText"
+                  autofocus="autofocus"
+                  placeholder="commentText"
+                  th:field="*{text}"></textarea>
+                </div>
+                <button type="submit" class="custom-button">Add Comment</button>
+
+            </form>
+        </div>
+
+    </div> <!--End of wrapper-->
+
+    <div class="container" id="comment-section">
+
+
+<div th:if="${commentCreated!=null}">
+    <p>
+        You added comment to an event <span th:text="${commentCreated}">.</span>
+    </p>
+</div>
+
+    <div class="flex-item" id="comment-container"  th:object="${allEventsComments}">
+        <div  th:if="${allEventsComments.isEmpty()}">
+            <p>Nobody comment this event yet</p>
+        </div>
+        <div class="flex-item" id="comment" th:each="comment: ${allEventsComments}">
+                <p th:text="${comment.author}">Author</p>
+                <p th:text="${comment.text}">Comment</p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

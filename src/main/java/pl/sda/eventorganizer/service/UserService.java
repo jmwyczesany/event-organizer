@@ -10,6 +10,7 @@ import pl.sda.eventorganizer.repository.Roles;
 import pl.sda.eventorganizer.repository.UserRepository;
 import javax.transaction.Transactional;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -43,8 +44,8 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUserName(username);
     }
 
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public Optional<User> findByEmail(String email) {
+        return Optional.ofNullable(userRepository.findByEmail(email));
     }
 
     @Transactional
@@ -58,6 +59,10 @@ public class UserService implements UserDetailsService {
         myUser.setRole(role);
         userRepository.save(myUser);
 
+    }
+
+    public void save(User user){
+        userRepository.save(user);
     }
 
 }
