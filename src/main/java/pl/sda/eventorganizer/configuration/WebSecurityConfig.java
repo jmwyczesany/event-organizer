@@ -4,15 +4,19 @@ package pl.sda.eventorganizer.configuration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import pl.sda.eventorganizer.repository.Roles;
+//import pl.sda.eventorganizer.UserPrincipalDetailsService;
+import pl.sda.eventorganizer.UserPrincipal;
+import pl.sda.eventorganizer.model.Roles;
+import pl.sda.eventorganizer.service.UserService;
 
 import javax.sql.DataSource;
 
@@ -20,34 +24,41 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserDetailsService userDetailsService;
+    private final UserService userService;
     private final PasswordEncoderConfig passwordEncoderConfiguration;
     private final DataSource dataSource;
 
-    public WebSecurityConfig(UserDetailsService userDetailsService, PasswordEncoderConfig passwordEncoderConfiguration, DataSource dataSource) {
-        this.userDetailsService = userDetailsService;
+    public WebSecurityConfig(UserService userService, PasswordEncoderConfig passwordEncoderConfiguration, DataSource dataSource) {
+        this.userService = userService;
         this.passwordEncoderConfiguration = passwordEncoderConfiguration;
         this.dataSource = dataSource;
     }
 
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) {
+         auth
+                 .authenticationProvider(daoAuthenticationProvider());
+    }
 
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-
-                .antMatchers("/index", "/registration", "/allEvents", "/addEvent", "/baza/**", "/eventDetails**", "/css/**")
+                .antMatchers("/index", "/registration", "/allEvents/**", "/baza/**", "/eventDetails**", "/css/**", "/error")
                 .permitAll()
+                .antMatchers("/addEvent")
+                .hasRole(Roles.ORGANIZER.name())
                 .anyRequest()
                 .fullyAuthenticated()
+
 
                 .and()
                 .formLogin()
                 .loginPage("/login")
                 .usernameParameter("email")
                 .passwordParameter("password")
-                .defaultSuccessUrl("/", true)
+                .defaultSuccessUrl("/allEvents/page/1/", true)
                 .failureForwardUrl("/login")
                 .permitAll()
 
@@ -60,8 +71,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
 
                 .and()
-                .userDetailsService(userDetailsService);
-
+                .userDetailsService(userService);
 
 
         //H2
@@ -71,12 +81,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoderConfiguration.passwordEncoder());
+        auth.userDetailsService(userService).passwordEncoder(passwordEncoderConfiguration.passwordEncoder());
     }
+
     @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
+    @Bean
+    DaoAuthenticationProvider daoAuthenticationProvider(){
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(this.passwordEncoderConfiguration.passwordEncoder());
+        provider.setUserDetailsService(this.userService);
+
+        return provider;
+    }
+
+
 
 }

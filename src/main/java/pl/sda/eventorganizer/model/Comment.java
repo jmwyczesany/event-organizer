@@ -24,7 +24,11 @@ public class Comment extends AuditModel{
 
     @Lob
     private String text;
-    private String author;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private User commentAuthor;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "event_id", nullable = false)

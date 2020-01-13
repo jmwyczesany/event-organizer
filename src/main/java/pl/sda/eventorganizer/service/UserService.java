@@ -5,10 +5,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.sda.eventorganizer.UserPrincipal;
+import pl.sda.eventorganizer.model.Event;
 import pl.sda.eventorganizer.model.User;
-import pl.sda.eventorganizer.repository.Roles;
+import pl.sda.eventorganizer.repository.EventRepository;
+import pl.sda.eventorganizer.model.Roles;
 import pl.sda.eventorganizer.repository.UserRepository;
 import javax.transaction.Transactional;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -18,12 +22,15 @@ public class UserService implements UserDetailsService {
 
 
     private final UserRepository userRepository;
+    private final EventRepository eventRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, EventRepository eventRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.eventRepository = eventRepository;
         this.passwordEncoder = passwordEncoder;
     }
+
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -34,11 +41,10 @@ public class UserService implements UserDetailsService {
 
         Set<SimpleGrantedAuthority> grantedAuthorities = new HashSet<>();
 
-
-        return new org.springframework.security.core.userdetails.User(user.getUsername(),
-                user.getPassword(), grantedAuthorities);
+        return new UserPrincipal(user);
 
     }
+
 
     public User findByUsername(String username) {
         return userRepository.findByUserName(username);
@@ -48,6 +54,11 @@ public class UserService implements UserDetailsService {
         return Optional.ofNullable(userRepository.findByEmail(email));
     }
 
+    public Optional<User> findByUserName(String username) {
+        return Optional.ofNullable(userRepository.findByUserName(username));
+    }
+
+
     @Transactional
     public void save(String email, String userName, String password, String confirmPassword, Roles role) {
 
@@ -56,6 +67,7 @@ public class UserService implements UserDetailsService {
         myUser.setUserName(userName);
         myUser.setPassword(passwordEncoder.encode(password));
         myUser.setConfirmPassword(confirmPassword);
+        myUser.setActive(1);
         myUser.setRole(role);
         userRepository.save(myUser);
 
@@ -64,5 +76,16 @@ public class UserService implements UserDetailsService {
     public void save(User user){
         userRepository.save(user);
     }
+
+
+    public Optional<User> findByUserId(Long userId) {
+        return userRepository.findById(userId);
+    }
+
+    public void addEventToUserList(Event event){
+
+    }
+
+
 
 }

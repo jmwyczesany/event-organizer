@@ -1,55 +1,130 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <!--    Boot strap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <!--    css -->
+    <link rel="stylesheet" type="text/css" href="/css/eventdetails.css" th:href="@{/css/eventdetails.css}">
     <title>Add your event</title>
 </head>
 <body>
+<div th:insert="fragments/navbar.html :: navbar"></div>
 
-<form th:action="@{/addEvent}" th:object="${addEventForm}" method="post">
-<div class="form-group">
-    <input type="text"
-    id="eventTitle"
-    name="eventTitle"
-    autofocus="autofocus"
-    placeholder="eventTitle"
-    th:field="*{title}">
+<!--Creating an event form-->
+<div class="container">
+
+    <form sec:authorize="hasRole('ORGANIZER')"
+          th:object="${addEventForm}" th:action="@{/addEvent}" th:method="post">
+<!--        -->
+<!--        (eventId=${addEventForm.eventId})-->
+        <h2 class="mt-4">Create an Event</h2>
+        <hr/>
+
+        <div>
+            <input type="hidden"
+                   id="id"
+                   th:name="eventId"
+                   th:field="*{eventId}">
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-8">
+                <span class="text-danger" th:errors="*{title}"> </span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="eventTitle" class="col-sm-2 col-form-label">Event title</label>
+            <div class="col-sm-4">
+                <input type="text"
+                       id="eventTitle"
+                       name="eventTitle"
+                       autofocus="autofocus"
+                       placeholder="eventTitle"
+                       th:field="*{title}">
+                <div th:if="${eventAlreadyDefined!=null}">
+                    <p>This Event Title is already defined in our database: <span th:text="${eventAlreadyDefined}"></span><span>. Figure out something new.</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row ">
+            <div class="col-sm-8">
+                <span class="text-danger" th:errors="*{description}"> </span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="eventDescription" class="col-sm-2 col-form-label">Event Description</label>
+            <div class="col-sm-4">
+                    <textarea class="form-control" rows="5"
+                              id="eventDescription"
+                              name="eventDescription"
+                              autofocus="autofocus"
+                              placeholder="min. 20 characters"
+                              th:field="*{description}">
+                    </textarea>
+            </div>
+        </div>
+        <div class="form-group row ">
+            <div class="col-sm-8">
+                <span class="text-danger" th:errors="*{start}"> </span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="startDate" class="col-sm-2 col-form-label">Start Date</label>
+            <div class="col-sm-4">
+                <input class="form-control" type="datetime-local"
+                       id="startDate"
+                       name="startDate"
+                       autofocus="autofocus"
+                       placeholder="startDate"
+                       th:field="*{start}">
+            </div>
+        </div>
+        <div class="form-group row ">
+            <div class="col-sm-8">
+                <span class="text-danger" th:errors="*{end}"> </span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="endDate" class="col-sm-2 col-form-label">End Date</label>
+            <div class="col-sm-4">
+                <input class="form-control" type="datetime-local"
+                       id="endDate"
+                       name="endDate"
+                       autofocus="autofocus"
+                       placeholder="endDate"
+                       th:field="*{end}">
+            </div>
+        </div>
+        <div>
+            <div th:if="${(param.eventId) == null}">
+                <button type="submit" class="btn btn-primary">Add Event</button>
+            </div>
+            <div th:if="${(param.eventId)}">
+                <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+        </div>
+    </form>
+
+
+    <!--        <form th:object="${addEventForm}" th:method="delete">-->
+    <!--            <button type="submit" class="btn btn-primary">Delete</button>-->
+    <!--        </form>-->
+    <!--    </div>-->
+    <div th:if="${eventCreated!=null}">
+        <p>Created an event: <span th:text="${eventCreated}">.</span></p>
+
+    </div>
+    <div th:if="${eventUpdated!=null}">
+        <p>Updated an event: <span th:text="${eventUpdated}">.</span></p>
+    </div>
+
 </div>
-    <div class="form-group">
-        <input type="text"
-               id="eventDescription"
-               name="eventDescription"
-               autofocus="autofocus"
-               placeholder="min. 20 characters"
-               th:field="*{description}">
-    </div>
-    <div class="form-group">
-        <input type="datetime-local"
-               id="startDate"
-               name="startDate"
-               autofocus="autofocus"
-               placeholder="startDate"
-               th:field="*{start}">
-    </div>
-    <div class="form-group">
-        <input type="datetime-local"
-               id="endDate"
-               name="endDate"
-               autofocus="autofocus"
-               placeholder="endDate"
-               th:field="*{end}">
-    </div>
-    <button type="submit" class="btn btn-primary">Add Event</button>
-</form>
-<div th:text="${error}"></div>
 
-<div th:if="${eventCreated!=null}">
-    <p>Created an event: <span th:text="${eventCreated}">.</span></p>
-</div>
 
+<div th:insert="fragments/bootstrapScript.html :: scripts"></div>
 </body>
 </html>

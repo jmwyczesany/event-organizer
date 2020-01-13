@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!--    Boot strap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <!--    css -->
+    <link rel="stylesheet" type="text/css" href="/css/eventdetails.css" th:href="@{/css/eventdetails.css}">
+    <title>Oops</title>
+</head>
+<body>
+<div th:insert="fragments/navbar.html :: navbar"></div>
+
+<div class="container">
+    <h2 class="display-2"> Something went wrong </h2>
+    <h3 th:text="${message}">Error Message</h3>
+    <a href="/">Go to the main page</a>
+</div>
+
+<div th:insert="fragments/bootstrapScript.html :: scripts"></div>
+</body>
+</html>

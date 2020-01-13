@@ -2,7 +2,7 @@ package pl.sda.eventorganizer.dto;
 
 
 import lombok.Data;
-import pl.sda.eventorganizer.repository.Roles;
+import pl.sda.eventorganizer.model.Roles;
 
 
 @Data

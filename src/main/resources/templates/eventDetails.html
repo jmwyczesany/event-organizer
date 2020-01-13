@@ -1,20 +1,24 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-<!--    Bootstrap -->
+<!-- Bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
 <!--    adding my own poor css -->
-    <link rel="stylesheet" type="text/css" href="/css/custom.css" th:href="@{/css/custom.css}">
+    <link rel="stylesheet" type="text/css" href="/css/eventdetails.css" th:href="@{/css/eventdetails.css}">
+
     <title th:text="${event.title}"> Title </title>
 </head>
 <body>
+<div th:insert="fragments/navbar.html :: navbar"></div>
     <div class="container" id="wrapper">
 
         <div class="flex-item" id="heading-container"> <!--Event heading-->
-            <h1 class="custom-heading" th:object="${event}" th:action="@{/eventDetails(id=${eventId})}">
+            <h1 class="custom-heading" th:object="${event}" th:action="@{/eventDetails(id=${event.eventId})}">
                 <span th:text="${event.title}">Title</span> / <span th:text="${#temporals.format(event.start, 'dd-MM-yyyy HH:mm')}">StartTime</span>
             </h1>
         </div>
@@ -22,18 +26,17 @@
         <div class="flex-item" id="text-container"> <!--Event description-->
                     <p class="custom-paragraph" th:text="${event.description}">Event description</p>
         </div>
-
+<!-- Comment form -->
         <div class="flex-item" id="comment-form">
             <form th:object="${addCommentForm}" th:method="POST">
-                <!--        th:action="@{/eventDetails(id=${event.eventId})}"-->
-                <div class="form-group">
-                    <input type="text"
-                           id="comment-author"
-                           name="commentAuthor"
-                           autofocus="autofocus"
-                           placeholder="commentAuthor"
-                           th:field="*{author}">
-                </div>
+<!--                <div class="form-group">-->
+<!--                    <input type="text"-->
+<!--                           id="comment-author"-->
+<!--                           name="commentAuthor"-->
+<!--                           autofocus="autofocus"-->
+<!--                           placeholder="commentAuthor"-->
+<!--                           th:field="*{author}">-->
+<!--                </div>-->
                 <div class="form-group">
         <textarea id="comment-text" cols="20" rows="6" class="form-group"
                   name="commentText"
@@ -42,18 +45,29 @@
                   th:field="*{text}"></textarea>
                 </div>
                 <button type="submit" class="custom-button">Add Comment</button>
-
+            </form>
+        </div>
+<!--End of comment form-->
+<!--        Signing in for an Event -->
+        <div>
+            <form id="participation-form" th:object="${participationForm}" th:method="PUT">
+            <input type="hidden" name = "eventId" th:value="*{eventId}">
+            <input type="hidden" name = "userId" th:value="*{userId}">
+            <button type="submit" class="custom-button">I want to participate</button>
+                    <span th:text="${messageForParticipation}">Error Message</span>
             </form>
         </div>
 
+
     </div> <!--End of wrapper-->
 
-    <div class="container" id="comment-section">
 
-
-<div th:if="${commentCreated!=null}">
+    <!-- Comment section -->
+    <div class="container" id="comment-section" th:object="${addCommentForm}">
+<!--A message for User after commenting-->
+<div>
     <p>
-        You added comment to an event <span th:text="${commentCreated}">.</span>
+        <span th:text="${message}"></span>
     </p>
 </div>
 
@@ -62,8 +76,10 @@
             <p>Nobody comment this event yet</p>
         </div>
         <div class="flex-item" id="comment" th:each="comment: ${allEventsComments}">
-                <p th:text="${comment.author}">Author</p>
-                <p th:text="${comment.text}">Comment</p>
+            <p th:text="${comment.text}">Comment</p>
+            <p><span th:text="${comment.commentAuthor.getUserName()}">Author</span>
+                <span th:text="${#temporals.format(comment.createdAt, 'dd-MM-yyyy HH:mm')}">DateOfComment</span>
+            </p>
         </div>
     </div>
 </div>

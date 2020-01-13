@@ -3,7 +3,7 @@ package pl.sda.eventorganizer.configuration;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import pl.sda.eventorganizer.dto.RegisterForm;
-import pl.sda.eventorganizer.repository.Roles;
+import pl.sda.eventorganizer.model.Roles;
 import pl.sda.eventorganizer.service.UserService;
 
 public class AdminCreationConfiguration implements ApplicationListener<ContextRefreshedEvent> {

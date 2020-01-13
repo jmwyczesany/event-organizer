@@ -18,12 +18,12 @@ public class LoginController {
         this.userValidator = userValidator;
     }
 
-    @GetMapping("login")
-    ModelAndView getLoginData(){
-        return new ModelAndView("login").addObject("loginForm",new LoginForm());
+    @GetMapping("/login")
+    public ModelAndView loginGet(){
+        return new ModelAndView("login").addObject("loginForm", new LoginForm());
     }
 
-    @PostMapping("login")
+    @PostMapping("/login")
     public ModelAndView loginPost(@ModelAttribute LoginForm loginForm, BindingResult bindingResult) {
 
         userValidator.validateLogin(loginForm, bindingResult);
@@ -33,7 +33,6 @@ public class LoginController {
             modelAndView.addObject("error", bindingResult.getFieldError().getDefaultMessage());
             return modelAndView;
         }
-
         return new ModelAndView("forward:/login");
     }
 

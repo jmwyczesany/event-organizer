@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.sda.eventorganizer.model.Comment;
 import pl.sda.eventorganizer.model.Event;
+import pl.sda.eventorganizer.model.User;
 import pl.sda.eventorganizer.repository.CommentRepository;
 import pl.sda.eventorganizer.repository.EventRepository;
 
@@ -24,9 +25,9 @@ public class CommentService {
     }
 
     @Transactional
-    public void createNewComment(String author, String text, Event event){
+    public void createNewComment(User commentAuthor, String text, Event event){
         Comment comment = new Comment();
-        comment.setAuthor(author);
+        comment.setCommentAuthor(commentAuthor);
         comment.setText(text);
         comment.setEvent(event);
         commentRepository.save(comment);

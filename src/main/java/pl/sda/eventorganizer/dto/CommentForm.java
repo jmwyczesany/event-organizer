@@ -2,16 +2,14 @@ package pl.sda.eventorganizer.dto;
 
 import lombok.Data;
 import pl.sda.eventorganizer.model.Event;
+import pl.sda.eventorganizer.model.User;
 
 
 @Data
 public class CommentForm {
 
-    private long id;
-
+    private Long id;
     private String text;
-
-    private String author;
-
+    private User commentAuthor;
 
 }

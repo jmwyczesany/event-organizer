@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <!--    Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>My Profile /// Event Organizer</title>
+</head>
+<body>
+<div th:insert="fragments/navbar.html :: navbar"></div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <h3 th:text="${#authentication.name}">UserName</h3>
+            <!--            User Status is alias for User.Role. I use it only in the view layer, since I thought displaying Role as Role may look strange -->
+            <div>
+                <h3 th:each=" authority : ${#authentication.getAuthorities()}">Status:
+                    <span th:text="${authority.getAuthority().substring(5, authority.getAuthority().length())}">Role</span></span>
+                </h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-sm">
+            <h3>Your upcoming Events:</h3>
+            <hr/>
+            <div class="list-group list-group-flush pre-scrollable" th:object="${allUsersEvents}">
+                <div th:if="${allUsersEvents.isEmpty()}">No upcoming events. Find out what we have <a
+                        href="/allEvents/page/1" th:href="@{/allEvents/page/1}">HERE</a></div>
+                <div th:each="event: ${allUsersEvents}">
+                    <a class="list-group-item list-group-item-action"
+                       th:href="@{eventDetails(id=${event.eventId})}"><span><p class="font-weight-bold" th:text="${event.title}">Event Title</p></span>
+                        <span th:text="${#temporals.format(event.start, 'dd-MM-yyy HH:mm')}">Start Date</span></a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-sm">
+
+                <h3>Events you organize</h3>
+                <hr/>
+                    <div th:object="${allEventsCreatedByUser}">
+                        <div sec:authorize="hasRole('ORGANIZER')" th:if="${allEventsCreatedByUser.isEmpty()}">You
+                            haven't created any event yet
+                        </div>
+                        <div class="pre-scrollable">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item" th:each="event : ${allEventsCreatedByUser}">
+                                    <div class="row">
+                                    <div class="col-sm-7"><p class="text-break font-weight-bold" th:text="${event.title}">EventTitle</p></div>
+                                    <div class="col-sm-3" th:text="${#temporals.format(event.start, 'dd-MM-yyyy HH:mm')}">StartTime</div>
+                                    <div class="col-sm-2"><a href="#" th:href="@{/addEvent(eventId=${event.eventId})}"
+                                             class="btn btn-primary btn-sm active">Edit</a></div>
+                                    </div>
+                                </li>
+
+                            </ul>
+                        </div>
+                        <div sec:authorize="hasRole('USER')"> In order to change Your status for "Organizer", send a
+                            request to Administrator. It will allow You to create your own events.
+                            <span><button class="btn btn-primary btn-lg active">Send!</button></span>
+                        </div>
+
+                </div>
+            </div>
+        </div>
+    </div> <!--    end of row -->
+
+</div> <!--    end of container -->
+</body>
+</html>

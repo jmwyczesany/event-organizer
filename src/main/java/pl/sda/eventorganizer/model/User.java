@@ -2,24 +2,18 @@ package pl.sda.eventorganizer.model;
 
 
 import lombok.Data;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import pl.sda.eventorganizer.repository.Roles;
-
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 
 @Data
 @Entity
 @Table
-public class User implements UserDetails {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private long id;
 
     @Column(nullable = false, unique = true)
@@ -33,8 +27,13 @@ public class User implements UserDetails {
     private String confirmPassword;
 
     @Column(nullable = false)
+    private int active;
+
+    @Column
     @Enumerated(EnumType.STRING)
     private Roles role;
+
+    private String permission = "";
 
     @ManyToMany
     @JoinTable(name = "user_events", joinColumns = @JoinColumn(name = "user_id"),
@@ -42,34 +41,40 @@ public class User implements UserDetails {
     private List<Event> userEvents;
 
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ADMIN"));
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    private List<Event> eventsCreatedByUser;
+
+    @OneToMany(mappedBy = "commentAuthor", cascade = CascadeType.ALL)
+    private List<Comment> userComment;
+
+
+//    default: role USER with status: active. Maybe default role is not a good idea, idk, maybe i will change it later
+//    or private Status ACTIVE, BLOCKED? (enum?)
+    public User(String email, String userName, String password) {
+        this.email = email;
+        this.userName = userName;
+        this.password = password;
+        this.role = Roles.USER;
+        this.active = 1;
+    }
+
+    public User(){}
+
+    public List<String> getPermissionsAsList(){
+        if(permission.length() > 0) {
+            return Arrays.asList(this.permission.split(","));
+        } return new ArrayList<>();
     }
 
     @Override
-    public String getUsername() {
-        return this.userName;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", userName='" + userName + '\'' +
+                ", role=" + role +
+                ", permission='" + permission + '\'' +
+                '}';
     }
 
     public static final class UserBuilder {
@@ -78,7 +83,7 @@ public class User implements UserDetails {
         private String userName;
         private String password;
         private String confirmPassword;
-        private Roles role;
+        private int active;
 
         private UserBuilder() {
         }
@@ -112,8 +117,8 @@ public class User implements UserDetails {
             return this;
         }
 
-        public UserBuilder withRole(Roles role) {
-            this.role = role;
+        public UserBuilder withActive(int active) {
+            this.active = active;
             return this;
         }
 
@@ -124,12 +129,8 @@ public class User implements UserDetails {
             user.setUserName(userName);
             user.setPassword(password);
             user.setConfirmPassword(confirmPassword);
-            user.setRole(role);
+            user.setActive(active);
             return user;
         }
     }
-
-
-
-
 }

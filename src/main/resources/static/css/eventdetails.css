@@ -24,6 +24,7 @@ p {
     background: #7170da;
 }
 
+
 #wrapper {
     display: flex;
     flex-direction: column;
@@ -117,4 +118,23 @@ p {
     min-height: fit-content;
     font-size: small;
 }
+
+#long-event-description p {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+}
+
+#long-event-description a {
+    content: '+ Read More';
+}
+
+#form-container {
+
+    align-self: center;
+    background: #899599;
+}
+
 
