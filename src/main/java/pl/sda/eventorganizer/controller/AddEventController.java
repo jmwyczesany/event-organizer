@@ -20,6 +20,7 @@ import java.security.Principal;
 
 
 @Controller
+
 public class AddEventController {
 
     private EventService eventService;
@@ -33,7 +34,7 @@ public class AddEventController {
         this.validator = validator;
     }
 
-    @InitBinder
+    @InitBinder("eventValidator")
     public void initBinder(WebDataBinder binder) {
         binder.setValidator(validator);
     }
@@ -56,7 +57,10 @@ public class AddEventController {
         }
     }
 
+    //I am 100% aware of NPE in this test, but I have no idea how to deal with it. Probably I missed some important information or misunderstood
+    // something.
     // creating new or updating existing event
+
     @PostMapping("addEvent")
     public ModelAndView addNewEvent(@RequestParam(name = "eventId", required = false) Long eventId,
                                     @ModelAttribute("addEventForm") @Valid EventForm eventForm,
@@ -78,7 +82,7 @@ public class AddEventController {
             eventService.addEventToAuthorsList(theEvent, principal.getName());
             modelAndView.setView(redirectView);
             rd.addAttribute("eventId", theEvent.getEventId());
-            return modelAndView;
+//            return modelAndView;
 //            updating an event
         } else {
             if (!eventService.checkIfUpdatedTitleRemainedSame(eventForm.getTitle(), eventId)) {
@@ -89,7 +93,9 @@ public class AddEventController {
             }
             eventService.updateTheEvent(eventForm.getTitle(),
                     eventForm.getDescription(), eventForm.getStart(), eventForm.getEnd(), theUser, eventId);
-            modelAndView.addObject("eventId", eventId);
+            rd.addAttribute("eventId", eventId);
+//            modelAndView.addObject("eventId", eventId);
+
         }
         modelAndView.setView(redirectView);
         return modelAndView;

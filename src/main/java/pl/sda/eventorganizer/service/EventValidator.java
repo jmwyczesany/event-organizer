@@ -5,6 +5,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 import pl.sda.eventorganizer.dto.EventForm;
+import pl.sda.eventorganizer.model.Event;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +14,7 @@ public class EventValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> aClass) {
-        return EventForm.class.equals(aClass);
+        return Event.class.equals(aClass);
     }
 
     @Override
