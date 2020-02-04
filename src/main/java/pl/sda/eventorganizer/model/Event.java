@@ -4,6 +4,8 @@ package pl.sda.eventorganizer.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 import pl.sda.eventorganizer.validation.UniqueTitle;
@@ -20,6 +22,7 @@ public class Event extends AuditModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "event_id", nullable = false)
+
     private long eventId;
 
     @Column(nullable = false)
@@ -37,6 +40,7 @@ public class Event extends AuditModel {
 
     @ManyToMany(mappedBy = "userEvents")
     @JsonIgnore
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<User> users;
 
     @ManyToOne

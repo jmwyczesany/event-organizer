@@ -12,10 +12,7 @@ import pl.sda.eventorganizer.repository.EventRepository;
 import pl.sda.eventorganizer.model.Roles;
 import pl.sda.eventorganizer.repository.UserRepository;
 import javax.transaction.Transactional;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -82,10 +79,13 @@ public class UserService implements UserDetailsService {
         return userRepository.findById(userId);
     }
 
-    public void addEventToUserList(Event event){
-
+    public List<Event> findAllUsersEvents(User user){
+        return eventRepository.findEventsByUsers(user);
     }
 
+    public void addEventToUsersList(Event event, User user) {
+        eventRepository.findEventsByUsers(user).add(event);
+    }
 
 
 }

@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 import pl.sda.eventorganizer.dto.AddUserToAnEventForm;
 import pl.sda.eventorganizer.dto.CommentForm;
 import pl.sda.eventorganizer.exceptions.EventNotFoundException;
@@ -48,7 +49,19 @@ public class EventDetailsController {
         modelAndView.addObject("event", eventService.findEventById(id));
         modelAndView.addObject("allEventsComments", commentService.getAllComments(id, pageable));
         modelAndView.addObject("addCommentForm", new CommentForm());
-        modelAndView.addObject("participationForm", new AddUserToAnEventForm());
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(!(authentication instanceof AnonymousAuthenticationToken)) {
+            User theUser = userService.findByUsername(authentication.getName());
+            List<Event> userEvents = theUser.getUserEvents();
+            if (userEvents.isEmpty()){
+                modelAndView.addObject("participationForm", new AddUserToAnEventForm());
+            } else if (userEvents.contains(eventService.findEventById(id))) {
+                AddUserToAnEventForm participationForm = new AddUserToAnEventForm(theUser, eventService.findEventById(id));
+                modelAndView.addObject("participationForm", participationForm);
+            } else modelAndView.addObject("participationForm", new AddUserToAnEventForm());
+        } else modelAndView.addObject("messageForAnonymousUser", "You have to be registered user to sing in to an event");
+
         return modelAndView;
     }
 
@@ -75,11 +88,42 @@ public class EventDetailsController {
         return "redirect:/eventDetails?id=" + eventId;
     }
 
+//    @PutMapping("/eventDetails")
+//    public String signInToAnEvent(@ModelAttribute(name = "participationForm") AddUserToAnEventForm participationForm,
+//                                  @RequestParam(name = "id") Long eventId, RedirectAttributes rd) {
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+//            String userName = authentication.getName();
+//            User theUser = userService.findByUsername(userName);
+//            Long currentlyLoggedUserId = theUser.getId();
+//            Event theEvent = eventService.findEventById(eventId);
+//            List<Event> userEvents = theUser.getUserEvents();
+//
+//            if (userEvents.contains(theEvent)) {
+//                theUser.getUserEvents().remove(theEvent);
+//                userService.save(theUser);
+//            } else {
+//                participationForm.setEvent(theEvent);
+//                participationForm.setUser(theUser);
+//                theUser.getUserEvents().add(theEvent);
+//                userService.save(theUser);
+//                rd.addAttribute("id", eventId).addFlashAttribute("userId", currentlyLoggedUserId).
+//                        addFlashAttribute("messageForParticipation", "Now you can come for this amazing event");
+//            }
+//        } else {
+//            rd.addFlashAttribute("messageForParticipation", "You have to be registered user to sing in to an Event");
+//        }
+//
+//        return "redirect:/eventDetails?id=" + eventId;
+//    }
+
     @PutMapping("/eventDetails")
-    public String signInToAnEvent(@ModelAttribute(name = "participationForm") AddUserToAnEventForm participationForm,
-                                  @RequestParam(name = "id") Long eventId, RedirectAttributes rd) {
+    public RedirectView signInToAnEvent(@ModelAttribute(name = "participationForm") AddUserToAnEventForm participationForm,
+                                        @RequestParam(name = "id") Long eventId, RedirectAttributes rd) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        RedirectView redirectView = new RedirectView("/userProfile");
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String userName = authentication.getName();
             User theUser = userService.findByUsername(userName);
@@ -88,20 +132,20 @@ public class EventDetailsController {
             List<Event> userEvents = theUser.getUserEvents();
 
             if (userEvents.contains(theEvent)) {
-                rd.addAttribute("id", eventId).addFlashAttribute("messageForParticipation", "You cannot participate in the same event twice, right?");
+                theUser.getUserEvents().remove(theEvent);
+                userService.save(theUser);
+                rd.addFlashAttribute("eventRemoved", "You have removed event " + theEvent.getTitle() + " from your list");
+                return redirectView;
             } else {
                 participationForm.setEvent(theEvent);
                 participationForm.setUser(theUser);
                 theUser.getUserEvents().add(theEvent);
                 userService.save(theUser);
-                rd.addAttribute("id", eventId).addFlashAttribute("userId", currentlyLoggedUserId).
-                        addFlashAttribute("messageForParticipation", "Now you can come for this amazing event");
+                rd.addFlashAttribute("eventAdded", "You have added event " + theEvent.getTitle() + " to your list");
             }
-        } else {
-            rd.addFlashAttribute("messageForParticipation", "You have to be registered user to sing in to an Event");
         }
 
-        return "redirect:/eventDetails?id=" + eventId;
+        return redirectView;
     }
 
 }

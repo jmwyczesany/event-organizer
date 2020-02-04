@@ -86,7 +86,8 @@ public class EventService {
         findAllEventsCreatedByUser(authorName).add(event);
     }
 
-    public void deleteEvent(Long eventId) {
+    @Transactional
+    public void deleteEventByEventId(Long eventId) {
         eventRepository.deleteEventByEventId(eventId);
     }
 

@@ -27,7 +27,7 @@
                     <p class="custom-paragraph" th:text="${event.description}">Event description</p>
         </div>
 <!-- Comment form -->
-        <div class="flex-item" id="comment-form">
+        <div class="flex-item" id="comment-form" sec:authorize="isAuthenticated()">
             <form th:object="${addCommentForm}" th:method="POST">
 <!--                <div class="form-group">-->
 <!--                    <input type="text"-->
@@ -49,13 +49,18 @@
         </div>
 <!--End of comment form-->
 <!--        Signing in for an Event -->
-        <div>
+        <div sec:authorize="isAuthenticated()">
             <form id="participation-form" th:object="${participationForm}" th:method="PUT">
             <input type="hidden" name = "eventId" th:value="*{eventId}">
             <input type="hidden" name = "userId" th:value="*{userId}">
-            <button type="submit" class="custom-button">I want to participate</button>
-                    <span th:text="${messageForParticipation}">Error Message</span>
+                <div>
+                    <button type="submit" class="custom-button" th:text="${participationForm?.userId} ? 'Sing me off' : 'Sing me up'">Participation button</button>
+                </div>
+<!--                    <div th:text="${messageForParticipation}">Error Message</div>-->
             </form>
+        </div>
+        <div sec:authorize="isAnonymous()">
+            <div class="alert alert-info">You have to be registered user to sign up to an event</div>
         </div>
 
 
@@ -64,12 +69,6 @@
 
     <!-- Comment section -->
     <div class="container" id="comment-section" th:object="${addCommentForm}">
-<!--A message for User after commenting-->
-<div>
-    <p>
-        <span th:text="${message}"></span>
-    </p>
-</div>
 
     <div class="flex-item" id="comment-container"  th:object="${allEventsComments}">
         <div  th:if="${allEventsComments.isEmpty()}">

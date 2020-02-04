@@ -12,6 +12,15 @@
 <body>
 <div th:insert="fragments/navbar.html :: navbar"></div>
 
+<div th:if="${messageForDelete}" th:text="${messageForDelete}" class="alert alert-success" role="alert">
+    A simple success alert—check it out!
+</div>
+<div class="alert alert-danger" role="alert" th:if="${eventRemoved}" th:text="${eventRemoved}">
+EventRemovedMessage
+</div>
+<div class="alert alert-success" role="alert" th:if="${eventAdded}" th:text="${eventAdded}">
+    EventAddedMessage
+</div>
 <div class="container">
     <div class="row">
         <div class="col-sm-6">
@@ -37,7 +46,8 @@
                         href="/allEvents/page/1" th:href="@{/allEvents/page/1}">HERE</a></div>
                 <div th:each="event: ${allUsersEvents}">
                     <a class="list-group-item list-group-item-action"
-                       th:href="@{eventDetails(id=${event.eventId})}"><span><p class="font-weight-bold" th:text="${event.title}">Event Title</p></span>
+                       th:href="@{eventDetails(id=${event.eventId})}"><span><p class="font-weight-bold"
+                                                                               th:text="${event.title}">Event Title</p></span>
                         <span th:text="${#temporals.format(event.start, 'dd-MM-yyy HH:mm')}">Start Date</span></a>
                 </div>
             </div>
@@ -46,34 +56,37 @@
 
         <div class="col-sm">
 
-                <h3>Events you organize</h3>
-                <hr/>
-                    <div th:object="${allEventsCreatedByUser}">
-                        <div sec:authorize="hasRole('ORGANIZER')" th:if="${allEventsCreatedByUser.isEmpty()}">You
-                            haven't created any event yet
-                        </div>
-                        <div class="pre-scrollable">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item" th:each="event : ${allEventsCreatedByUser}">
-                                    <div class="row">
-                                    <div class="col-sm-7"><p class="text-break font-weight-bold" th:text="${event.title}">EventTitle</p></div>
-                                    <div class="col-sm-3" th:text="${#temporals.format(event.start, 'dd-MM-yyyy HH:mm')}">StartTime</div>
-                                    <div class="col-sm-2"><a href="#" th:href="@{/addEvent(eventId=${event.eventId})}"
-                                             class="btn btn-primary btn-sm active">Edit</a></div>
-                                    </div>
-                                </li>
+            <h3>Events you organize</h3>
+            <hr/>
+            <div th:object="${allEventsCreatedByUser}">
+                <div sec:authorize="hasRole('ORGANIZER')" th:if="${allEventsCreatedByUser.isEmpty()}">You
+                    haven't created any event yet
+                </div>
+                <div class="pre-scrollable">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item" th:each="event : ${allEventsCreatedByUser}">
+                            <div class="row">
+                                <div class="col-sm-7"><p class="text-break font-weight-bold" th:text="${event.title}">
+                                    EventTitle</p></div>
+                                <div class="col-sm-3" th:text="${#temporals.format(event.start, 'dd-MM-yyyy HH:mm')}">
+                                    StartTime
+                                </div>
+                                <div class="col-sm-2"><a href="#" th:href="@{/addEvent(eventId=${event.eventId})}">Edit</a></div>
+                            </div>
+                        </li>
 
-                            </ul>
-                        </div>
-                        <div sec:authorize="hasRole('USER')"> In order to change Your status for "Organizer", send a
-                            request to Administrator. It will allow You to create your own events.
-                            <span><button class="btn btn-primary btn-lg active">Send!</button></span>
-                        </div>
+                    </ul>
+                </div>
+                <div sec:authorize="hasRole('USER')"> In order to change Your status for "Organizer", send a
+                    request to Administrator. It will allow You to create your own events.
+                    <span><button class="btn btn-primary btn-lg active">Send!</button></span>
 
                 </div>
+
             </div>
         </div>
-    </div> <!--    end of row -->
+    </div>
+</div> <!--    end of row -->
 
 </div> <!--    end of container -->
 </body>

@@ -14,13 +14,14 @@
 <body>
 <div th:insert="fragments/navbar.html :: navbar"></div>
 
+
 <!--Creating an event form-->
 <div class="container">
 
     <form sec:authorize="hasRole('ORGANIZER')"
           th:object="${addEventForm}" th:action="@{/addEvent}" th:method="post">
-<!--        -->
-<!--        (eventId=${addEventForm.eventId})-->
+        <!--        -->
+        <!--        (eventId=${addEventForm.eventId})-->
         <h2 class="mt-4">Create an Event</h2>
         <hr/>
 
@@ -45,7 +46,8 @@
                        placeholder="eventTitle"
                        th:field="*{title}">
                 <div th:if="${eventAlreadyDefined!=null}">
-                    <p>This Event Title is already defined in our database: <span th:text="${eventAlreadyDefined}"></span><span>. Figure out something new.</span></p>
+                    <p>This Event Title is already defined in our database: <span
+                            th:text="${eventAlreadyDefined}"></span><span>. Figure out something new.</span></p>
                 </div>
             </div>
         </div>
@@ -100,29 +102,25 @@
             </div>
         </div>
         <div>
-            <div th:if="${(param.eventId) == null}">
+            <span th:if="${(param.eventId) == null}">
                 <button type="submit" class="btn btn-primary">Add Event</button>
-            </div>
-            <div th:if="${(param.eventId)}">
+            </span>
+            <span th:if="${(param.eventId)}">
                 <button type="submit" class="btn btn-primary">Update</button>
-            </div>
+            </span>
         </div>
     </form>
+    <span class="container"  th:if="${(param.eventId)}">
+    <form sec:authorize="hasRole('ORGANIZER')"
+          th:method="DELETE">
+        <div>
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </div>
+    </form>
+</span>
 
+</div>
 
-    <!--        <form th:object="${addEventForm}" th:method="delete">-->
-    <!--            <button type="submit" class="btn btn-primary">Delete</button>-->
-    <!--        </form>-->
-    <!--    </div>-->
-<!--    <div th:if="${eventCreated!=null}">-->
-<!--        <p>Created an event: <span th:text="${eventCreated}">.</span></p>-->
-
-<!--    </div>-->
-<!--    <div th:if="${eventUpdated!=null}">-->
-<!--        <p>Updated an event: <span th:text="${eventUpdated}">.</span></p>-->
-<!--    </div>-->
-
-<!--</div>-->
 </div>
 <div th:insert="fragments/bootstrapScript.html :: scripts"></div>
 </body>

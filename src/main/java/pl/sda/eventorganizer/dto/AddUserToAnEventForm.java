@@ -26,5 +26,7 @@ public class AddUserToAnEventForm {
     public AddUserToAnEventForm(User user, Event event) {
         this.user = user;
         this.event = event;
+        this.eventId = event.getEventId();
+        this.userId = user.getId();
     }
 }

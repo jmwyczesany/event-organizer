@@ -10,9 +10,11 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import pl.sda.eventorganizer.dto.EventForm;
+import pl.sda.eventorganizer.exceptions.EventNotFoundException;
 import pl.sda.eventorganizer.model.Event;
 import pl.sda.eventorganizer.model.User;
 import pl.sda.eventorganizer.service.EventService;
+import pl.sda.eventorganizer.service.EventValidator;
 import pl.sda.eventorganizer.service.UserService;
 
 import javax.validation.Valid;
@@ -34,11 +36,6 @@ public class AddEventController {
         this.validator = validator;
     }
 
-    @InitBinder("eventValidator")
-    public void initBinder(WebDataBinder binder) {
-        binder.setValidator(validator);
-    }
-
     // get empty or completed form for creating / updating purposes
     @GetMapping("addEvent")
     public ModelAndView getAddEventForm(@RequestParam(name = "eventId", required = false) Long eventId) {
@@ -57,15 +54,16 @@ public class AddEventController {
         }
     }
 
-    //I am 100% aware of NPE in this test, but I have no idea how to deal with it. Probably I missed some important information or misunderstood
-    // something.
+
     // creating new or updating existing event
 
     @PostMapping("addEvent")
     public ModelAndView addNewEvent(@RequestParam(name = "eventId", required = false) Long eventId,
-                                    @ModelAttribute("addEventForm") @Valid EventForm eventForm,
+                                    @ModelAttribute("addEventForm") EventForm eventForm,
                                     BindingResult bindingResult, Principal principal, RedirectAttributes rd) {
 
+//        new EventValidator().validate(eventForm, bindingResult);
+        validator.validate(eventForm, bindingResult);
         User theUser = userService.findByUsername(principal.getName());
         RedirectView redirectView = new RedirectView("/eventCreated");
         ModelAndView modelAndView = new ModelAndView("addEvent");
@@ -102,10 +100,31 @@ public class AddEventController {
     }
 
 //    @DeleteMapping("addEvent")
-//    public ModelAndView deleteEvent(@RequestParam(name = "eventId") Long eventId){
-//            eventService.deleteEvent(eventId);
-//        return new ModelAndView("addEvent");
+//    public ModelAndView deleteEvent(@RequestParam(name = "eventId") Long eventId, RedirectAttributes rd){
+//        Event eventToDelete = eventService.findEventById(eventId);
+//        ModelAndView modelAndView = new ModelAndView("addEvent");
+//        RedirectView redirectView = new RedirectView("/userProfile");
+//
+//        if(eventToDelete != null) {
+//            eventService.deleteEventByEventId(eventId);
+//        } else throw new EventNotFoundException("event not found");
+//        rd.addFlashAttribute("messageForDelete", "Event Deleted");
+//
+//        modelAndView.setView(redirectView);
+//        return modelAndView ;
 //    }
+    @DeleteMapping("addEvent")
+    public RedirectView deleteEvent(@RequestParam(name = "eventId") Long eventId, RedirectAttributes rd){
+        Event eventToDelete = eventService.findEventById(eventId);
+        RedirectView redirectView = new RedirectView("/userProfile");
+
+        if(eventToDelete != null) {
+            eventService.deleteEventByEventId(eventId);
+        } else throw new EventNotFoundException("event not found");
+        rd.addFlashAttribute("messageForDelete", "Event Deleted");
+
+        return redirectView;
+    }
 }
 
 

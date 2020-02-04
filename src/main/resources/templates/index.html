@@ -19,7 +19,10 @@
     <h1 class="display-4">Welcome to Event Organizer!</h1>
     <p class="lead">A place where You can sign up to an Event, comment it or create Your own one.</p>
     <hr class="my-4">
-    <p>Please login or create an account</p>
+    <div sec:authorize="isAnonymous()">
+        <p>Please login or create an account</p>
+    </div>
+
     </div>
 </div>
 
