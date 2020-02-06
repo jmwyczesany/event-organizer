@@ -15,7 +15,7 @@ import java.util.Objects;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-public class EventValidatorTest {
+public class EventUserValidatorTest {
 
     @Test
     public void validateNoErrorsTest(){

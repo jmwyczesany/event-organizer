@@ -35,6 +35,10 @@ public class AllEventsController {
                 getAllEventsSortByWhatever(PageRequest.of(pageNo - 1, 5, Sort.by("start").ascending()));
         ModelAndView modelAndView = new ModelAndView("allEvents").addObject("allEvents", eventsAsPage);
 
+        if(eventsAsPage.isEmpty()){
+            modelAndView.addObject("noEventsAvailable", "No events available");
+        }
+
         if (eventsAsPage.getTotalPages() > 0) {
             List<Integer> pagination = IntStream.rangeClosed(1, eventsAsPage.getTotalPages()).boxed().collect(Collectors.toList());
             modelAndView.addObject("pagination", pagination);

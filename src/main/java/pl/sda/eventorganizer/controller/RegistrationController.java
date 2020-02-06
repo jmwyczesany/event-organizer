@@ -1,12 +1,7 @@
 package pl.sda.eventorganizer.controller;
 
 
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
-import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,10 +22,9 @@ public class RegistrationController {
     private final UserValidator userValidator;
 
 
-    public RegistrationController(UserService userService, UserValidator userValidator) {
+    public RegistrationController(UserService userService, @Qualifier("userValidator") UserValidator userValidator) {
         this.userService = userService;
         this.userValidator = userValidator;
-
     }
 
     @GetMapping("registration")
@@ -49,6 +43,7 @@ public class RegistrationController {
             return modelAndView;
         }
         userService.save(registerForm.getEmail(), registerForm.getUserName(), registerForm.getPassword(), registerForm.getConfirmPassword(), registerForm.getRole());
+
         try {
             request.login(registerForm.getEmail(), registerForm.getPassword());
         } catch (ServletException e) {

@@ -3,6 +3,7 @@ package pl.sda.eventorganizer.service;
 import io.codearte.jfairy.Fairy;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.sda.eventorganizer.model.Event;
@@ -18,6 +19,7 @@ import java.util.Random;
 
 // some random data for H2 database
 @Service
+@Profile("dev")
 public class DbInit implements ApplicationRunner {
 
     private EventRepository eventRepository;

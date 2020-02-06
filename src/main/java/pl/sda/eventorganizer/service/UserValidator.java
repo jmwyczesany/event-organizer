@@ -9,8 +9,6 @@ import pl.sda.eventorganizer.dto.LoginForm;
 import pl.sda.eventorganizer.dto.RegisterForm;
 import pl.sda.eventorganizer.model.User;
 
-import java.util.Optional;
-
 @Service
 public class UserValidator implements Validator {
 
@@ -43,7 +41,7 @@ public class UserValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors,"email", "Not Empty", "All field are required");
 
         if(userService.findByEmail(user.getEmail()).isPresent()) {
-            errors.rejectValue("email", "Duplicate.registerForm.email", "Email already in base. Please Create account on another email.");
+            errors.rejectValue("email", "Duplicate.registerForm.email", "An account with this email address is already defined in our database");
         }
         if (!user.getEmail().matches("^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$")) {
             errors.rejectValue("email", "NotEmail", "Please use proper email address.");
@@ -51,14 +49,14 @@ public class UserValidator implements Validator {
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "userName", "Not Empty","All field are required");
         if (userService.findByUsername(user.getUserName()) != null) {
-            errors.rejectValue("username", "Duplicate.registerForm.username", "Username taken. Please choose another username.");
+            errors.rejectValue("userName", "Duplicate.registerForm.username", "Username taken. Please choose a different username.");
         }
         if (user.getUserName().length() < 3 || user.getUserName().length() > 25) {
-            errors.rejectValue("username", "Size.registerForm.username", "Please use between 3 and 25 characters.");
+            errors.rejectValue("userName", "Size.registerForm.username", "Username must be between 3 and 25 characters long");
         }
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "NotEmpty", "All fields are required.");
         if (user.getPassword().length() < 8 || user.getPassword().length() > 30) {
-            errors.rejectValue("password", "Size.registerForm.password", "Please use between 8 and 30 characters.");
+            errors.rejectValue("password", "Size.registerForm.password", "Password must be between 8 and 30 characters long");
         }
         if (!user.getConfirmPassword().equals(user.getPassword())) {
             errors.rejectValue("confirmPassword", "Diff.registerForm.confirmPassword", "Passwords don't match.");
