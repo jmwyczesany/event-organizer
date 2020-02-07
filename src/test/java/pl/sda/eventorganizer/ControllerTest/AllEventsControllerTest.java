@@ -1,7 +1,6 @@
 package pl.sda.eventorganizer.ControllerTest;
 
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +12,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import pl.sda.eventorganizer.controller.AllEventsController;
 import pl.sda.eventorganizer.model.Event;
 import pl.sda.eventorganizer.service.EventService;
 
@@ -44,7 +41,7 @@ public class AllEventsControllerTest {
 
         List<Event> eventList = new ArrayList<>();
         Page<Event> eventPage = new PageImpl<>(eventList);
-        when(eventServiceMock.getAllEventsSortByWhatever(any(Pageable.class))).thenReturn(eventPage);
+        when(eventServiceMock.getAllFutureEvents(any(Pageable.class))).thenReturn(eventPage);
 
         mockMvc.perform(get("/allEvents/page/{pageNo}", 1 ))
                 .andExpect(status().is2xxSuccessful())

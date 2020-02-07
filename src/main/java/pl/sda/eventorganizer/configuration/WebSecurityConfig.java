@@ -48,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/index", "/registration", "/allEvents/**", "/baza/**", "/eventDetails**", "/css/**", "/error")
                 .permitAll()
                 .antMatchers("/addEvent")
-                .hasRole(Roles.ORGANIZER.name())
+                .hasAnyRole(Roles.ORGANIZER.name(), Roles.ADMIN.name())
                 .anyRequest()
                 .fullyAuthenticated()
 

@@ -18,7 +18,7 @@
 <!--Creating an event form-->
 <div class="container">
 
-    <form sec:authorize="hasRole('ORGANIZER')"
+    <form sec:authorize="hasAnyRole('ORGANIZER', 'ADMIN')"
           th:object="${addEventForm}" th:action="@{/addEvent}" th:method="post">
         <!--        -->
         <!--        (eventId=${addEventForm.eventId})-->

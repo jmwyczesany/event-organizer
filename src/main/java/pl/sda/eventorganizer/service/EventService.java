@@ -60,7 +60,7 @@ public class EventService {
     }
 
     // memento reading docs, wyczesie
-    public Page<Event> getAllEventsSortByWhatever(Pageable pageable) {
+    public Page<Event> getAllFutureEvents(Pageable pageable) {
 //        int pageSize = pageable.getPageSize();
 //        int pageNumber = pageable.getPageNumber();
 //        List<Event> sublistOfEvents;
@@ -74,7 +74,7 @@ public class EventService {
 //            sublistOfEvents = listOfAllEvents.subList(firstItem, toIndex);
 //        }
         //        return new PageImpl<>(sublistOfEvents, PageRequest.of(pageNumber, pageSize), listOfAllEvents.size());
-        return eventRepository.findAll(pageable);
+        return eventRepository.findAllFutureEvents(pageable, LocalDateTime.now());
     }
 
 
@@ -89,6 +89,10 @@ public class EventService {
     @Transactional
     public void deleteEventByEventId(Long eventId) {
         eventRepository.deleteEventByEventId(eventId);
+    }
+
+    public Page<Event> findAllEventsInArchive(Pageable pageable){
+        return eventRepository.findAllEventsInArchive(pageable, LocalDateTime.now());
     }
 
 

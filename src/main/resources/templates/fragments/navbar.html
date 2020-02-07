@@ -9,17 +9,18 @@
         <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
             <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" href="/allEvents/page/1" th:href="@{|/allEvents/page/1/|}">All
-                        events</a>
+                    <a class="nav-link" href="/allEvents/page/1" th:href="@{|/allEvents/page/1/|}">Upcoming Events</a>
                 </li>
-
                 <li class="nav-item">
                     <a class="nav-link" href="#">Find event</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/userProfile" th:href="@{/userProfile}">My Profile</a>
                 </li>
-                <li sec:authorize="hasRole('ORGANIZER')" class="nav-item">
+                <li class="nav-item">
+                    <a class="nav-link" href="/allEvents/page/1" th:href="@{/allEvents/archive(pageNo=1)}">Event Archive</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN','ORGANIZER')">
                     <a class="nav-link" href="/addEvent" th:href="@{/addEvent}">Add new Event</a>
                 </li>
                 <li class="nav-item d-lg-none">

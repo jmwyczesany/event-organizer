@@ -68,6 +68,11 @@ public class UserService implements UserDetailsService {
         myUser.setRole(role);
         userRepository.save(myUser);
 
+        if(userRepository.findByUserName(userName).getId() == 1L) {
+            myUser.setRole(Roles.ADMIN);
+            userRepository.save(myUser);
+        }
+
     }
 
     public void save(User user){

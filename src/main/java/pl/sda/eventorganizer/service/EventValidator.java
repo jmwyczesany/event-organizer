@@ -32,12 +32,11 @@ public class EventValidator implements Validator {
             errors.rejectValue("description", "too.short", "Description must be at least 20 characters long");
         }
 
-        if(eventForm.getStart() == null) {
+        if (eventForm.getStart() == null) {
             errors.rejectValue("start", "empty.field", "All fields are required");
-        } else if(eventForm.getEnd() == null) {
+        } else if (eventForm.getEnd() == null) {
             errors.rejectValue("end", "empty.field", "All fields are required");
-        } else
-        if (eventForm.getStart().isAfter(eventForm.getEnd())) {
+        } else if (eventForm.getStart().isAfter(eventForm.getEnd())) {
             errors.rejectValue("start", "invalid.time.range", "Traveling back in time is not allowed on this planet");
         } else if (eventForm.getStart().isBefore(LocalDateTime.now())) {
             errors.rejectValue("start", "past.datetime", "Sorry, you cannot add an Event in the past");

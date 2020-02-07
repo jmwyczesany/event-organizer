@@ -5,9 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import pl.sda.eventorganizer.model.Event;
 import pl.sda.eventorganizer.service.EventService;
@@ -32,17 +30,29 @@ public class AllEventsController {
     public ModelAndView getAllEvents(@PathVariable(name = "pageNo") int pageNo) {
 
         Page<Event> eventsAsPage = eventService.
-                getAllEventsSortByWhatever(PageRequest.of(pageNo - 1, 5, Sort.by("start").ascending()));
+                getAllFutureEvents(PageRequest.of(pageNo - 1, 5, Sort.by("start").ascending()));
         ModelAndView modelAndView = new ModelAndView("allEvents").addObject("allEvents", eventsAsPage);
 
-        if(eventsAsPage.isEmpty()){
+        return getPaginationAndEmptyList(eventsAsPage, modelAndView);
+    }
+
+    @GetMapping("allEvents/archive")
+    public ModelAndView getArchiveAllEventsPage(@RequestParam("pageNo") int pageNo) {
+        Page<Event> eventArchivePage = eventService.findAllEventsInArchive(PageRequest.of(pageNo - 1, 5, Sort.by("start").descending()));
+        ModelAndView modelAndView = new ModelAndView("allEvents");
+        modelAndView.addObject("allEvents", eventArchivePage);
+
+        return getPaginationAndEmptyList(eventArchivePage, modelAndView);
+    }
+
+    private ModelAndView getPaginationAndEmptyList(Page<Event> eventAsPage, ModelAndView modelAndView) {
+        if (eventAsPage.isEmpty()) {
             modelAndView.addObject("noEventsAvailable", "No events available");
         }
 
-        if (eventsAsPage.getTotalPages() > 0) {
-            List<Integer> pagination = IntStream.rangeClosed(1, eventsAsPage.getTotalPages()).boxed().collect(Collectors.toList());
+        if (eventAsPage.getTotalPages() > 0) {
+            List<Integer> pagination = IntStream.rangeClosed(1, eventAsPage.getTotalPages()).boxed().collect(Collectors.toList());
             modelAndView.addObject("pagination", pagination);
-
         }
         return modelAndView;
     }

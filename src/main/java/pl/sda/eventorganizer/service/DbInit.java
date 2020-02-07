@@ -34,7 +34,7 @@ public class DbInit implements ApplicationRunner {
     }
 
 // finding random Datetime in the future mm nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn nn b b b  n   n cxds <-- sorry, that's my cat (his name is Richard)
-    private long getRandomDateLong(){
+    private long getRandomDateInTheFutureLong(){
         LocalDateTime begin = LocalDateTime.now().plusDays(2L);
         LocalDateTime end = begin.plusMonths(12L);
         ZonedDateTime zdt = begin.atZone(ZoneId.systemDefault());
@@ -43,6 +43,13 @@ public class DbInit implements ApplicationRunner {
         long endTime = zdt2.toInstant().toEpochMilli();
         long diff = endTime - beginTime + 1;
         return beginTime + (long) (Math.random() * diff);
+    }
+
+    private long getRandomDateInThePastAsLong(){
+        long beginDate = LocalDateTime.now().minusMonths(12).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        long endDate = LocalDateTime.now().minusDays(7).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        long diff = endDate - beginDate + 1;
+        return beginDate + (long) (Math.random() * diff);
     }
 
     @Override
@@ -58,8 +65,14 @@ public class DbInit implements ApplicationRunner {
         userRepository.saveAll(users);
         LocalDateTime randomTime;
         Fairy fairy = Fairy.create();
+        for (int i = 1; i<= 20; i++) {
+            randomTime = Instant.ofEpochMilli(getRandomDateInThePastAsLong()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+            Event pastEvent = new Event(fairy.textProducer().randomString(new Random().nextInt(50)), fairy.textProducer().paragraph(i +2),
+                    randomTime, randomTime.plusHours(2L), userTheCreator, userTheCreator.getUserName());
+            eventRepository.save(pastEvent);
+        }
         for (int i = 1; i <= 20; i++){
-            randomTime = Instant.ofEpochMilli(getRandomDateLong()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+            randomTime = Instant.ofEpochMilli(getRandomDateInTheFutureLong()).atZone(ZoneId.systemDefault()).toLocalDateTime();
             Event someEvent = new Event(fairy.textProducer().randomString(new Random().nextInt(50)),
                     fairy.textProducer().paragraph(i+2), randomTime, randomTime.plusHours(2L), userTheCreator, userTheCreator.getUserName());
            eventRepository.save(someEvent);
