@@ -20,6 +20,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/allEvents/page/1" th:href="@{/allEvents/archive(pageNo=1)}">Event Archive</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/allEvents/page/1" th:href="@{/eventSearch}">Search</a>
+                </li>
                 <li class="nav-item" sec:authorize="hasAnyRole('ADMIN','ORGANIZER')">
                     <a class="nav-link" href="/addEvent" th:href="@{/addEvent}">Add new Event</a>
                 </li>

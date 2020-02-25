@@ -32,6 +32,8 @@ public class AllEventsController {
         Page<Event> eventsAsPage = eventService.
                 getAllFutureEvents(PageRequest.of(pageNo - 1, 5, Sort.by("start").ascending()));
         ModelAndView modelAndView = new ModelAndView("allEvents").addObject("allEvents", eventsAsPage);
+        modelAndView.addObject("numberOfPages", eventsAsPage.getTotalPages());
+
 
         return getPaginationAndEmptyList(eventsAsPage, modelAndView);
     }
@@ -39,8 +41,9 @@ public class AllEventsController {
     @GetMapping("allEvents/archive")
     public ModelAndView getArchiveAllEventsPage(@RequestParam("pageNo") int pageNo) {
         Page<Event> eventArchivePage = eventService.findAllEventsInArchive(PageRequest.of(pageNo - 1, 5, Sort.by("start").descending()));
-        ModelAndView modelAndView = new ModelAndView("allEvents");
+        ModelAndView modelAndView = new ModelAndView("archive");
         modelAndView.addObject("allEvents", eventArchivePage);
+
 
         return getPaginationAndEmptyList(eventArchivePage, modelAndView);
     }
@@ -52,7 +55,8 @@ public class AllEventsController {
 
         if (eventAsPage.getTotalPages() > 0) {
             List<Integer> pagination = IntStream.rangeClosed(1, eventAsPage.getTotalPages()).boxed().collect(Collectors.toList());
-            modelAndView.addObject("pagination", pagination);
+            modelAndView.addObject("paginationIntegerList", pagination).addObject("numberOfPages", eventAsPage.getTotalPages())
+            .addObject("pageSize", 5);
         }
         return modelAndView;
     }

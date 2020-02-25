@@ -41,6 +41,18 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findEventsByUsers(User user);
 
+    /*next four methods are used in searching*/
 
+    @Query("SELECT e FROM Event e WHERE e.title LIKE %:titlePhrase% AND e.start < :today AND e.end > :today")
+    Page<Event> findAllOngoingEventsByTitlePhrase(Pageable pageable, @Param("titlePhrase") String titlePhrase, @Param("today") LocalDateTime today);
+
+    @Query("SELECT e FROM Event e WHERE e.title LIKE %:titlePhrase% AND e.end < :today")
+    Page<Event> findAllPastEventsByTitlePhrase(Pageable pageable, @Param("titlePhrase") String titlePhrase, @Param("today") LocalDateTime today);
+
+    @Query("SELECT e FROM Event e WHERE e.title LIKE %:titlePhrase% AND e.start > :today")
+    Page<Event> findAllFutureEventsByTitlePhrase(Pageable pageable, @Param("titlePhrase") String titlePhrase, @Param("today") LocalDateTime today);
+
+    @Query("SELECT e FROM Event e WHERE e.title LIKE %:titlePhrase%")
+    Page<Event> findAllEventsByTitlePhrase(Pageable pageable, @Param("titlePhrase") String titlePhrase);
 
 }

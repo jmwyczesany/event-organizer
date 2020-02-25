@@ -2,13 +2,14 @@ package pl.sda.eventorganizer.service;
 
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
+import pl.sda.eventorganizer.dto.TimeRange;
 import pl.sda.eventorganizer.model.Event;
 import pl.sda.eventorganizer.model.User;
 import pl.sda.eventorganizer.repository.EventRepository;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -93,6 +94,26 @@ public class EventService {
 
     public Page<Event> findAllEventsInArchive(Pageable pageable){
         return eventRepository.findAllEventsInArchive(pageable, LocalDateTime.now());
+    }
+
+    public Page<Event> getResultOfSearchingByTitlePhrase(Pageable pageable, String titlePhrase, TimeRange timeRange) {
+        LocalDateTime today = LocalDateTime.now();
+        Page<Event> searchingResult = Page.empty();
+        switch (timeRange) {
+            case ALL:
+                searchingResult = eventRepository.findAllEventsByTitlePhrase(pageable, titlePhrase);
+                break;
+            case NOW:
+                searchingResult = eventRepository.findAllOngoingEventsByTitlePhrase(pageable, titlePhrase, today);
+                break;
+            case PAST:
+                searchingResult = eventRepository.findAllPastEventsByTitlePhrase(pageable, titlePhrase, today);
+                break;
+            case FUTURE:
+                searchingResult = eventRepository.findAllFutureEventsByTitlePhrase(pageable, titlePhrase, today);
+                break;
+        }
+        return searchingResult;
     }
 
 

@@ -48,14 +48,20 @@
     <div class="col-md-8">
         <nav aria-label="Pagination">
             <ul class="pagination justify-content-center">
-                <li class="page-item" th:each="pageNo : ${pagination}" >
-                    <a class="page-link" th:href="@{|/allEvents/page/${pageNo}|}" th:text="${pageNo}"></a>
+                <li class="page-item" th:each="pageNo : ${paginationIntegerList}">
+                    <div>
+                        <a class="page-link"  th:href="@{|/allEvents/page/${pageNo}|}" th:text="${pageNo}"></a>
+                    </div>
+
                 </li>
             </ul>
         </nav>
     </div>
     <div class="col-md-2"></div>
 </div>
+</div>
+
+
 
 <div th:insert="fragments/bootstrapScript.html :: scripts"></div>
 

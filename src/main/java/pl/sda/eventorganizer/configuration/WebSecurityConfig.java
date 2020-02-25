@@ -45,7 +45,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/index", "/registration", "/allEvents/**", "/baza/**", "/eventDetails**", "/css/**", "/error")
+                .antMatchers("/index", "/registration", "/allEvents/**", "/baza/**",
+                        "/eventDetails**", "/css/**", "/error", "/eventSearch", "/result/**")
                 .permitAll()
                 .antMatchers("/addEvent")
                 .hasAnyRole(Roles.ORGANIZER.name(), Roles.ADMIN.name())

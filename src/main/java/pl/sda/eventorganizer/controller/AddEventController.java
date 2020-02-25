@@ -1,11 +1,9 @@
 package pl.sda.eventorganizer.controller;
 
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -15,10 +13,8 @@ import pl.sda.eventorganizer.exceptions.EventNotFoundException;
 import pl.sda.eventorganizer.model.Event;
 import pl.sda.eventorganizer.model.User;
 import pl.sda.eventorganizer.service.EventService;
-import pl.sda.eventorganizer.service.EventValidator;
 import pl.sda.eventorganizer.service.UserService;
 
-import javax.validation.Valid;
 import java.security.Principal;
 
 
@@ -63,7 +59,6 @@ public class AddEventController {
                                     @ModelAttribute("addEventForm") EventForm eventForm,
                                     BindingResult bindingResult, Principal principal, RedirectAttributes rd) {
 
-//        new EventValidator().validate(eventForm, bindingResult);
         validator.validate(eventForm, bindingResult);
         User theUser = userService.findByUsername(principal.getName());
         RedirectView redirectView = new RedirectView("/eventCreated");
